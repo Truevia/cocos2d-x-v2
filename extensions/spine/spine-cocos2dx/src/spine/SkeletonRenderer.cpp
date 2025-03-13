@@ -32,6 +32,7 @@
 #include <spine/Extension.h>
 //#include <spine/SkeletonBatch.h>
 //#include <spine/SkeletonTwoColorBatch.h>
+#include <spine/PolygonBatch.h>
 #include <spine/AttachmentVertices.h>
 #include <algorithm>
 #include <string.h>
@@ -97,6 +98,9 @@ namespace spine {
 			worldVerticesLength = INITIAL_WORLD_VERTICES_LENGTH;
 		}
 		
+        _polygonBatch = PolygonBatch::createWithCapacity(10920); // 使用最大容量
+        _polygonBatch->retain();
+
 		_clipper = new (__FILE__, __LINE__) SkeletonClipping();
 		
 		_blendFunc = BlendFuncALPHA_PREMULTIPLIED;
@@ -110,7 +114,6 @@ namespace spine {
 	
 	void SkeletonRenderer::setupGLProgramState (bool twoColorTintEnabled) {
 		if (twoColorTintEnabled) {
-//			setGLProgramState(SkeletonTwoColorBatch::getInstance()->getTwoColorTintProgramState());
 			return;
 		}
 		
@@ -132,8 +135,6 @@ namespace spine {
 				break;
 			}
 		}
-        //@fixme
-//		setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP, texture));
         setShaderProgram(CCShaderCache::sharedShaderCache()->programForKey(kCCShader_PositionTextureColor));
 
 	}
@@ -168,6 +169,7 @@ namespace spine {
 	}
 	
 	SkeletonRenderer::~SkeletonRenderer () {
+        _polygonBatch->release();
 		if (_ownsSkeletonData) delete _skeleton->getData();
 		if (_ownsSkeleton) delete _skeleton;
 		if (_ownsAtlas && _atlas) delete _atlas;
@@ -278,8 +280,7 @@ namespace spine {
         CC_NODE_DRAW_SETUP();
         
         // 应用节点变换
-        kmGLPushMatrix();
-    //    kmGLMultMatrix(&_modelViewTransform);
+//        kmGLPushMatrix();
         
         if (_effect) _effect->begin(*_skeleton);
         
@@ -289,18 +290,19 @@ namespace spine {
         nodeColor.b = getDisplayedColor().b / (float)255;
         nodeColor.a = getDisplayedOpacity() / (float)255;
         
-        Color4F color;
-        Color4F darkColor;
-        float darkPremultipliedAlpha = _premultipliedAlpha ? 255 : 0;
-        AttachmentVertices* attachmentVertices = nullptr;
-        
         // 确保启用纹理
-    //    glEnable(GL_TEXTURE_2D);
+        glEnable(GL_TEXTURE_2D);
+        
+        CCTexture2D* lastTexture = nullptr;
+        ccBlendFunc lastBlendFunc = {GL_ONE, GL_ZERO}; // 初始无效值，确保第一次会设置混合模式
         
         bool inRange = _startSlotIndex != -1 || _endSlotIndex != -1 ? false : true;
+        
+        // 遍历所有插槽
         for (int i = 0, n = _skeleton->getSlots().size(); i < n; ++i) {
             Slot* slot = _skeleton->getDrawOrder()[i];
             
+            // 处理插槽范围限制
             if (_startSlotIndex >= 0 && _startSlotIndex == slot->getData().getIndex()) {
                 inRange = true;
             }
@@ -314,26 +316,32 @@ namespace spine {
                 inRange = false;
             }
             
+            // 跳过没有附件的插槽
             if (!slot->getAttachment()) {
                 _clipper->clipEnd(*slot);
                 continue;
             }
             
-            // 如果插槽不可见则提前退出
+            // 跳过不可见的插槽
             if (slot->getColor().a == 0) {
                 _clipper->clipEnd(*slot);
                 continue;
             }
             
-            // 存储渲染数据的临时变量
+            // 临时变量存储渲染数据
             float* vertices = nullptr;
             float* uvs = nullptr;
             unsigned short* indices = nullptr;
             int vertexCount = 0;
             int indexCount = 0;
             CCTexture2D* texture = nullptr;
+            AttachmentVertices* attachmentVertices = nullptr;
+            Color4F attachmentColor;
+            bool ownVertices = false; // 标记是否需要释放顶点数据
             
+            // 处理不同类型的附件
             if (slot->getAttachment()->getRTTI().isExactly(RegionAttachment::rtti)) {
+                // 区域附件处理
                 RegionAttachment* attachment = (RegionAttachment*)slot->getAttachment();
                 attachmentVertices = (AttachmentVertices*)attachment->getRendererObject();
                 
@@ -345,7 +353,7 @@ namespace spine {
                 
                 texture = attachmentVertices->_texture;
                 
-                // 如果附件不可见则提前退出
+                // 跳过不可见的附件
                 if (attachment->getColor().a == 0) {
                     _clipper->clipEnd(*slot);
                     continue;
@@ -354,14 +362,15 @@ namespace spine {
                 // 准备顶点和UV数据
                 vertexCount = 4; // 四边形有4个顶点
                 vertices = new float[vertexCount * 2]; // 每个顶点2个浮点数
-                uvs = new float[vertexCount * 2]; // 每个顶点2个UV坐标
+                ownVertices = true;
                 
                 // 获取世界坐标
                 attachment->computeWorldVertices(slot->getBone(), vertices, 0, 2);
                 
                 // 获取UV坐标
+                uvs = new float[vertexCount * 2]; // 每个顶点2个UV坐标
                 float* attachmentUVs = attachment->getUVs().buffer();
-                for (int j = 0; j < 8; j++) {
+                for (int j = 0; j < vertexCount * 2; j++) {
                     uvs[j] = attachmentUVs[j];
                 }
                 
@@ -371,12 +380,14 @@ namespace spine {
                 indices[0] = 0; indices[1] = 1; indices[2] = 2;
                 indices[3] = 2; indices[4] = 3; indices[5] = 0;
                 
-                color.r = attachment->getColor().r;
-                color.g = attachment->getColor().g;
-                color.b = attachment->getColor().b;
-                color.a = attachment->getColor().a;
+                // 获取附件颜色
+                attachmentColor.r = attachment->getColor().r;
+                attachmentColor.g = attachment->getColor().g;
+                attachmentColor.b = attachment->getColor().b;
+                attachmentColor.a = attachment->getColor().a;
             }
             else if (slot->getAttachment()->getRTTI().isExactly(MeshAttachment::rtti)) {
+                // 网格附件处理
                 MeshAttachment* attachment = (MeshAttachment*)slot->getAttachment();
                 attachmentVertices = (AttachmentVertices*)attachment->getRendererObject();
                 
@@ -388,7 +399,7 @@ namespace spine {
                 
                 texture = attachmentVertices->_texture;
                 
-                // 如果附件不可见则提前退出
+                // 跳过不可见的附件
                 if (attachment->getColor().a == 0) {
                     _clipper->clipEnd(*slot);
                     continue;
@@ -399,12 +410,15 @@ namespace spine {
                 vertexCount = verticesLength / 2;
                 
                 vertices = new float[verticesLength];
+                ownVertices = true;
+                
+                // 获取世界坐标
                 attachment->computeWorldVertices(*slot, 0, verticesLength, vertices, 0, 2);
                 
+                // 获取UV坐标
                 uvs = new float[verticesLength];
-                for (int j = 0; j < vertexCount; j++) {
-                    uvs[j * 2] = attachment->getUVs()[j * 2];
-                    uvs[j * 2 + 1] = attachment->getUVs()[j * 2 + 1];
+                for (int j = 0; j < vertexCount * 2; j++) {
+                    uvs[j] = attachment->getUVs()[j];
                 }
                 
                 // 设置索引
@@ -412,16 +426,19 @@ namespace spine {
                 indices = new unsigned short[indexCount];
                 memcpy(indices, attachment->getTriangles().buffer(), indexCount * sizeof(unsigned short));
                 
-                color.r = attachment->getColor().r;
-                color.g = attachment->getColor().g;
-                color.b = attachment->getColor().b;
-                color.a = attachment->getColor().a;
+                // 获取附件颜色
+                attachmentColor.r = attachment->getColor().r;
+                attachmentColor.g = attachment->getColor().g;
+                attachmentColor.b = attachment->getColor().b;
+                attachmentColor.a = attachment->getColor().a;
             }
             else if (slot->getAttachment()->getRTTI().isExactly(ClippingAttachment::rtti)) {
+                // 裁剪附件处理
                 ClippingAttachment* clip = (ClippingAttachment*)slot->getAttachment();
                 _clipper->clipStart(*slot, clip);
                 continue;
             } else {
+                // 不支持的附件类型
                 _clipper->clipEnd(*slot);
                 continue;
             }
@@ -429,27 +446,33 @@ namespace spine {
             // 检查纹理是否有效
             if (!texture) {
                 CCLOG("Error: Attachment has no texture!");
-                if (vertices) delete[] vertices;
-                if (uvs) delete[] uvs;
-                if (indices) delete[] indices;
+                if (ownVertices) {
+                    delete[] vertices;
+                    delete[] uvs;
+                    delete[] indices;
+                }
                 _clipper->clipEnd(*slot);
                 continue;
             }
             
-            float alpha = nodeColor.a * _skeleton->getColor().a * slot->getColor().a * color.a * 255;
+            // 计算最终颜色
+            float alpha = nodeColor.a * _skeleton->getColor().a * slot->getColor().a * attachmentColor.a * 255;
             // 如果这个附件的颜色为0则跳过渲染
             if (alpha == 0) {
                 _clipper->clipEnd(*slot);
-                if (vertices) delete[] vertices;
-                if (uvs) delete[] uvs;
-                if (indices) delete[] indices;
+                if (ownVertices) {
+                    delete[] vertices;
+                    delete[] uvs;
+                    delete[] indices;
+                }
                 continue;
             }
             
+            // 颜色混合计算
             float multiplier = _premultipliedAlpha ? alpha : 255;
-            float red = nodeColor.r * _skeleton->getColor().r * slot->getColor().r * color.r * multiplier;
-            float green = nodeColor.g * _skeleton->getColor().g * slot->getColor().g * color.g * multiplier;
-            float blue = nodeColor.b * _skeleton->getColor().b * slot->getColor().b * color.b * multiplier;
+            float red = nodeColor.r * _skeleton->getColor().r * slot->getColor().r * attachmentColor.r * multiplier;
+            float green = nodeColor.g * _skeleton->getColor().g * slot->getColor().g * attachmentColor.g * multiplier;
+            float blue = nodeColor.b * _skeleton->getColor().b * slot->getColor().b * attachmentColor.b * multiplier;
             
             // 预处理顶点颜色数据
             ccColor4B vertexColor = ccc4((GLubyte)red, (GLubyte)green, (GLubyte)blue, (GLubyte)alpha);
@@ -474,17 +497,17 @@ namespace spine {
                     blendFunc.dst = GL_ONE_MINUS_SRC_ALPHA;
             }
             
-            // 应用混合模式
-            ccGLBlendFunc(blendFunc.src, blendFunc.dst);
-            
             // 如果有裁剪
             if (_clipper->isClipping()) {
                 _clipper->clipTriangles(vertices, indices, indexCount, uvs, 2);
                 
                 // 清理原始数据，因为我们将使用裁剪后的数据
-                if (vertices) delete[] vertices;
-                if (uvs) delete[] uvs;
-                if (indices) delete[] indices;
+                if (ownVertices) {
+                    delete[] vertices;
+                    delete[] uvs;
+                    delete[] indices;
+                    ownVertices = false; // 已释放，使用裁剪器的数据
+                }
                 
                 if (_clipper->getClippedTriangles().size() == 0) {
                     _clipper->clipEnd(*slot);
@@ -499,51 +522,39 @@ namespace spine {
                 indexCount = _clipper->getClippedTriangles().size();
             }
             
-            // 现在进行实际的渲染
-            
-            // 绑定纹理
-            ccGLBindTexture2D(texture->getName());
-            
-            // 创建顶点数组
-            ccV3F_C4B_T2F* quadVertices = new ccV3F_C4B_T2F[vertexCount];
-            for (int v = 0; v < vertexCount; v++) {
-                quadVertices[v].vertices = vertex3(vertices[v * 2], vertices[v * 2 + 1], 1);
-                quadVertices[v].colors = vertexColor;
-                quadVertices[v].texCoords = tex2(uvs[v * 2], uvs[v * 2 + 1]);
+            // 检查是否需要刷新批处理
+            // 当纹理或混合模式发生变化时需要刷新
+            if (lastTexture != texture ||
+                lastBlendFunc.src != blendFunc.src ||
+                lastBlendFunc.dst != blendFunc.dst) {
+                
+                // 如果已经有数据，先刷新
+                _polygonBatch->flush();
+                
+                lastTexture = texture;
+                lastBlendFunc = blendFunc;
+                
+                // 设置当前的混合模式
+                ccGLBlendFunc(blendFunc.src, blendFunc.dst);
             }
             
-            // 启用顶点属性
-            ccGLEnableVertexAttribs(kCCVertexAttribFlag_Position | kCCVertexAttribFlag_Color | kCCVertexAttribFlag_TexCoords);
+            // 将当前三角形添加到批处理中
+            _polygonBatch->add(texture, vertices, uvs, vertexCount * 2, indices, indexCount, &vertexColor);
             
-            // 设置顶点数据
-            glVertexAttribPointer(kCCVertexAttrib_Position, 2, GL_FLOAT, GL_FALSE, sizeof(ccV3F_C4B_T2F), &quadVertices[0].vertices);
-            glVertexAttribPointer(kCCVertexAttrib_Color, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ccV3F_C4B_T2F), &quadVertices[0].colors);
-            glVertexAttribPointer(kCCVertexAttrib_TexCoords, 2, GL_FLOAT, GL_FALSE, sizeof(ccV3F_C4B_T2F), &quadVertices[0].texCoords);
-            
-            // 设置纹理参数
-            ccTexParams texParams = {GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE};
-            texture->setTexParameters(&texParams);
-            
-            // 绘制三角形
-            glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, indices);
-            
-            // 增加draw次数
-            CC_INCREMENT_GL_DRAWS(1);
-            
-            // 清理
-            delete[] quadVertices;
-            
-            // 如果使用了裁剪，不删除数据，因为它们由裁剪器管理
-            if (!_clipper->isClipping()) {
-                if (vertices) delete[] vertices;
-                if (uvs) delete[] uvs;
-                if (indices) delete[] indices;
+            // 如果使用了自己分配的内存，释放它
+            if (ownVertices) {
+                delete[] vertices;
+                delete[] uvs;
+                delete[] indices;
             }
             
             _clipper->clipEnd(*slot);
         }
         
         _clipper->clipEnd();
+        
+        // 确保所有三角形都被绘制
+        _polygonBatch->flush();
         
         if (_effect) _effect->end();
         
@@ -552,10 +563,8 @@ namespace spine {
     //        drawDebug();
         }
         
-        kmGLPopMatrix();
+//        kmGLPopMatrix();
         
-
-
         CC_PROFILER_STOP_CATEGORY(kCCProfilerCategorySpine, "SkeletonRenderer::draw");
     }
 

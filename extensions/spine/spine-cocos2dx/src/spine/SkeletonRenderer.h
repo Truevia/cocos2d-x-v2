@@ -37,6 +37,7 @@
 namespace spine {
 	
 	class AttachmentVertices;
+    class PolygonBatch;
 	
 	/* Draws a skeleton. */
 	class SkeletonRenderer: public cocos2d::CCNodeRGBA, public cocos2d::BlendProtocol {
@@ -154,6 +155,8 @@ namespace spine {
 		
 		int _startSlotIndex;
 		int _endSlotIndex;
+        
+        PolygonBatch *_polygonBatch = nullptr;
 	};
 	
 }
