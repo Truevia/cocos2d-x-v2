@@ -87,7 +87,7 @@
 #include "physics_nodes/CCPhysicsSprite.h"
 #endif
 
-#include "spine/cc/spine-cocos2dx.h"
+#include "spine/spine-cocos2dx.h"
 
 #include "CocoStudio/CocoStudio.h"
 
