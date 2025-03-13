@@ -40,7 +40,7 @@ THE SOFTWARE.
 #import "CCEventDispatcher.h"
 #import "CCEGLView.h"
 
-#define CC_USE_IMGUI 1
+#define CC_USE_IMGUI 0
 
 // imgui
 #if CC_USE_IMGUI > 0
@@ -365,8 +365,9 @@ if (!inImGuiWidgets) \
 
 - (void)mouseDown:(NSEvent *)theEvent
 {
+#if CC_USE_IMGUI > 0
     DISPATCH_EVENT_TO_IMGUI(theEvent);
-    
+#endif
     mousePressed = true;
 	NSPoint event_location = [theEvent locationInWindow];
 	NSPoint local_point = [self convertPoint:event_location fromView:nil];
@@ -387,8 +388,9 @@ if (!inImGuiWidgets) \
 
 - (void)mouseMoved:(NSEvent *)theEvent
 {
+#if CC_USE_IMGUI > 0
     DISPATCH_EVENT_TO_IMGUI(theEvent);
-    
+#endif
     if (mousePressed) {
         DISPATCH_EVENT(theEvent, _cmd);
     }
@@ -396,8 +398,9 @@ if (!inImGuiWidgets) \
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
+#if CC_USE_IMGUI > 0
     DISPATCH_EVENT_TO_IMGUI(theEvent);
-    
+#endif
     if (!mousePressed) return;
 	NSPoint event_location = [theEvent locationInWindow];
 	NSPoint local_point = [self convertPoint:event_location fromView:nil];
@@ -418,8 +421,9 @@ if (!inImGuiWidgets) \
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
+#if CC_USE_IMGUI > 0
     DISPATCH_EVENT_TO_IMGUI(theEvent);
-    
+#endif
     if (mousePressed == false) return ;
     mousePressed = false;
 	NSPoint event_location = [theEvent locationInWindow];
