@@ -527,6 +527,9 @@ namespace spine {
             // 绘制三角形
             glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, indices);
             
+            // 增加draw次数
+            CC_INCREMENT_GL_DRAWS(1);
+            
             // 清理
             delete[] quadVertices;
             
@@ -551,8 +554,7 @@ namespace spine {
         
         kmGLPopMatrix();
         
-        // 增加draw次数
-		CC_INCREMENT_GL_DRAWS(1);
+
 
         CC_PROFILER_STOP_CATEGORY(kCCProfilerCategorySpine, "SkeletonRenderer::draw");
     }
