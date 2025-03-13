@@ -312,6 +312,7 @@
 		848D76032D835EF1006C9001 /* raptor.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F32D835EF1006C9001 /* raptor.atlas */; };
 		848D76042D835EF1006C9001 /* goblins.json in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F12D835EF1006C9001 /* goblins.json */; };
 		848D76062D8362CC006C9001 /* HelloWorld.png in Resources */ = {isa = PBXBuildFile; fileRef = 848D76052D8362CC006C9001 /* HelloWorld.png */; };
+		84B081192D839D150010479C /* PolygonBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B081182D839D150010479C /* PolygonBatch.cpp */; };
 		8C583FAD169DB6D500F63A10 /* CCEditBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C583FA8169DB6D500F63A10 /* CCEditBox.cpp */; };
 		8C583FAE169DB6D500F63A10 /* CCEditBoxImplMac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8C583FAC169DB6D500F63A10 /* CCEditBoxImplMac.mm */; };
 /* End PBXBuildFile section */
@@ -961,6 +962,8 @@
 		848D75F72D835EF1006C9001 /* tank.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tank.png; sourceTree = "<group>"; };
 		848D75F82D835EF1006C9001 /* tank.skel */ = {isa = PBXFileReference; lastKnownFileType = file; path = tank.skel; sourceTree = "<group>"; };
 		848D76052D8362CC006C9001 /* HelloWorld.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = HelloWorld.png; sourceTree = "<group>"; };
+		84B081172D839D150010479C /* PolygonBatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PolygonBatch.h; sourceTree = "<group>"; };
+		84B081182D839D150010479C /* PolygonBatch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PolygonBatch.cpp; sourceTree = "<group>"; };
 		8C583FA8169DB6D500F63A10 /* CCEditBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCEditBox.cpp; path = CCEditBox/CCEditBox.cpp; sourceTree = "<group>"; };
 		8C583FA9169DB6D500F63A10 /* CCEditBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEditBox.h; path = CCEditBox/CCEditBox.h; sourceTree = "<group>"; };
 		8C583FAA169DB6D500F63A10 /* CCEditBoxImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCEditBoxImpl.h; path = CCEditBox/CCEditBoxImpl.h; sourceTree = "<group>"; };
@@ -2040,6 +2043,8 @@
 				848D736F2D82DCAC006C9001 /* SkeletonRenderer.cpp */,
 				848D73722D82DCAC006C9001 /* spine-cocos2dx.h */,
 				848D73732D82DCAC006C9001 /* spine-cocos2dx.cpp */,
+				84B081172D839D150010479C /* PolygonBatch.h */,
+				84B081182D839D150010479C /* PolygonBatch.cpp */,
 			);
 			path = spine;
 			sourceTree = "<group>";
@@ -2424,6 +2429,7 @@
 				15C1575D1683159E00D239F2 /* b2CircleContact.cpp in Sources */,
 				37C62CDD18E157C300D16FC4 /* CCSkin.cpp in Sources */,
 				15C1575E1683159E00D239F2 /* b2Contact.cpp in Sources */,
+				84B081192D839D150010479C /* PolygonBatch.cpp in Sources */,
 				15C1575F1683159E00D239F2 /* b2ContactSolver.cpp in Sources */,
 				15C157601683159E00D239F2 /* b2EdgeAndCircleContact.cpp in Sources */,
 				37C62CD118E157C300D16FC4 /* CCActionNode.cpp in Sources */,
