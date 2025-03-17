@@ -53,7 +53,6 @@
 		15C1576E1683159E00D239F2 /* b2WheelJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 15C1572A1683159D00D239F2 /* b2WheelJoint.cpp */; };
 		15C1577D1683159E00D239F2 /* b2Rope.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 15C157401683159D00D239F2 /* b2Rope.cpp */; };
 		15C157D9168315B300D239F2 /* chipmunk.c in Sources */ = {isa = PBXBuildFile; fileRef = 15C157AC168315B300D239F2 /* chipmunk.c */; };
-		15C157DA168315B300D239F2 /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = 15C157AD168315B300D239F2 /* CMakeLists.txt */; };
 		15C157DB168315B300D239F2 /* cpConstraint.c in Sources */ = {isa = PBXBuildFile; fileRef = 15C157AF168315B300D239F2 /* cpConstraint.c */; };
 		15C157DC168315B300D239F2 /* cpDampedRotarySpring.c in Sources */ = {isa = PBXBuildFile; fileRef = 15C157B0168315B300D239F2 /* cpDampedRotarySpring.c */; };
 		15C157DD168315B300D239F2 /* cpDampedSpring.c in Sources */ = {isa = PBXBuildFile; fileRef = 15C157B1168315B300D239F2 /* cpDampedSpring.c */; };
@@ -230,6 +229,7 @@
 		41BC70E715BF81A5006A0A6C /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 41BC70E015BF81A5006A0A6C /* Icon.icns */; };
 		41BC70E815BF81A5006A0A6C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 41BC70E115BF81A5006A0A6C /* main.m */; };
 		43B91F091949BB0500F7F815 /* CocoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43B91F071949BB0500F7F815 /* CocoLoader.cpp */; };
+		840206992D887B91005C84A4 /* res in Resources */ = {isa = PBXBuildFile; fileRef = 840206982D887B91005C84A4 /* res */; };
 		848D74642D82DCAC006C9001 /* TranslateTimeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 848D74042D82DCAC006C9001 /* TranslateTimeline.cpp */; };
 		848D74662D82DCAC006C9001 /* Extension.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 848D73E12D82DCAC006C9001 /* Extension.cpp */; };
 		848D74672D82DCAC006C9001 /* DeformTimeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 848D73DC2D82DCAC006C9001 /* DeformTimeline.cpp */; };
@@ -296,22 +296,6 @@
 		848D74B62D82DCAC006C9001 /* PathConstraintPositionTimeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 848D73ED2D82DCAC006C9001 /* PathConstraintPositionTimeline.cpp */; };
 		848D74B72D82DCAC006C9001 /* TransformConstraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 848D74012D82DCAC006C9001 /* TransformConstraint.cpp */; };
 		848D74B82D82DCAC006C9001 /* SkeletonBinary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 848D73F62D82DCAC006C9001 /* SkeletonBinary.cpp */; };
-		848D75EA2D82EFC8006C9001 /* spineboy.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 848D75E72D82EFC8006C9001 /* spineboy.atlas */; };
-		848D75EB2D82EFC8006C9001 /* spineboy.json in Resources */ = {isa = PBXBuildFile; fileRef = 848D75E82D82EFC8006C9001 /* spineboy.json */; };
-		848D75EC2D82EFC8006C9001 /* spineboy.png in Resources */ = {isa = PBXBuildFile; fileRef = 848D75E92D82EFC8006C9001 /* spineboy.png */; };
-		848D75F92D835EF1006C9001 /* tank.png in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F72D835EF1006C9001 /* tank.png */; };
-		848D75FA2D835EF1006C9001 /* goblins.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F02D835EF1006C9001 /* goblins.atlas */; };
-		848D75FB2D835EF1006C9001 /* coin.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 848D75ED2D835EF1006C9001 /* coin.atlas */; };
-		848D75FC2D835EF1006C9001 /* coin.png in Resources */ = {isa = PBXBuildFile; fileRef = 848D75EE2D835EF1006C9001 /* coin.png */; };
-		848D75FD2D835EF1006C9001 /* coin.skel in Resources */ = {isa = PBXBuildFile; fileRef = 848D75EF2D835EF1006C9001 /* coin.skel */; };
-		848D75FE2D835EF1006C9001 /* raptor.json in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F42D835EF1006C9001 /* raptor.json */; };
-		848D75FF2D835EF1006C9001 /* tank.skel in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F82D835EF1006C9001 /* tank.skel */; };
-		848D76002D835EF1006C9001 /* goblins.png in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F22D835EF1006C9001 /* goblins.png */; };
-		848D76012D835EF1006C9001 /* tank.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F62D835EF1006C9001 /* tank.atlas */; };
-		848D76022D835EF1006C9001 /* raptor.png in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F52D835EF1006C9001 /* raptor.png */; };
-		848D76032D835EF1006C9001 /* raptor.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F32D835EF1006C9001 /* raptor.atlas */; };
-		848D76042D835EF1006C9001 /* goblins.json in Resources */ = {isa = PBXBuildFile; fileRef = 848D75F12D835EF1006C9001 /* goblins.json */; };
-		848D76062D8362CC006C9001 /* HelloWorld.png in Resources */ = {isa = PBXBuildFile; fileRef = 848D76052D8362CC006C9001 /* HelloWorld.png */; };
 		84B081192D839D150010479C /* PolygonBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84B081182D839D150010479C /* PolygonBatch.cpp */; };
 		8C583FAD169DB6D500F63A10 /* CCEditBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8C583FA8169DB6D500F63A10 /* CCEditBox.cpp */; };
 		8C583FAE169DB6D500F63A10 /* CCEditBoxImplMac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8C583FAC169DB6D500F63A10 /* CCEditBoxImplMac.mm */; };
@@ -333,6 +317,18 @@
 			remoteInfo = cocos2dx;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		840206972D887B63005C84A4 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		15C156C21683158700D239F2 /* cocos2dx.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = cocos2dx.xcodeproj; path = ../../../cocos2dx/proj.mac/cocos2dx.xcodeproj; sourceTree = "<group>"; };
@@ -793,6 +789,7 @@
 		41BC70E315BF81A5006A0A6C /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = SOURCE_ROOT; };
 		43B91F071949BB0500F7F815 /* CocoLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CocoLoader.cpp; sourceTree = "<group>"; };
 		43B91F081949BB0500F7F815 /* CocoLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoLoader.h; sourceTree = "<group>"; };
+		840206982D887B91005C84A4 /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; path = res; sourceTree = "<group>"; };
 		848D73682D82DCAC006C9001 /* AttachmentVertices.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AttachmentVertices.h; sourceTree = "<group>"; };
 		848D73692D82DCAC006C9001 /* AttachmentVertices.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AttachmentVertices.cpp; sourceTree = "<group>"; };
 		848D736A2D82DCAC006C9001 /* SkeletonAnimation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SkeletonAnimation.h; sourceTree = "<group>"; };
@@ -946,22 +943,6 @@
 		848D74082D82DCAC006C9001 /* VertexAttachment.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VertexAttachment.cpp; sourceTree = "<group>"; };
 		848D74092D82DCAC006C9001 /* VertexEffect.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VertexEffect.cpp; sourceTree = "<group>"; };
 		848D74C22D82DFD5006C9001 /* cocos2d3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cocos2d3.h; sourceTree = "<group>"; };
-		848D75E72D82EFC8006C9001 /* spineboy.atlas */ = {isa = PBXFileReference; lastKnownFileType = text; name = spineboy.atlas; path = "/opt/b/cocos2d-x-v2/extensions/spine/spine-cocos2dx/example/Resources/common/spineboy.atlas"; sourceTree = "<absolute>"; };
-		848D75E82D82EFC8006C9001 /* spineboy.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = spineboy.json; path = "/opt/b/cocos2d-x-v2/extensions/spine/spine-cocos2dx/example/Resources/common/spineboy.json"; sourceTree = "<absolute>"; };
-		848D75E92D82EFC8006C9001 /* spineboy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spineboy.png; path = "/opt/b/cocos2d-x-v2/extensions/spine/spine-cocos2dx/example/Resources/common/spineboy.png"; sourceTree = "<absolute>"; };
-		848D75ED2D835EF1006C9001 /* coin.atlas */ = {isa = PBXFileReference; lastKnownFileType = text; path = coin.atlas; sourceTree = "<group>"; };
-		848D75EE2D835EF1006C9001 /* coin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = coin.png; sourceTree = "<group>"; };
-		848D75EF2D835EF1006C9001 /* coin.skel */ = {isa = PBXFileReference; lastKnownFileType = file; path = coin.skel; sourceTree = "<group>"; };
-		848D75F02D835EF1006C9001 /* goblins.atlas */ = {isa = PBXFileReference; lastKnownFileType = text; path = goblins.atlas; sourceTree = "<group>"; };
-		848D75F12D835EF1006C9001 /* goblins.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = goblins.json; sourceTree = "<group>"; };
-		848D75F22D835EF1006C9001 /* goblins.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = goblins.png; sourceTree = "<group>"; };
-		848D75F32D835EF1006C9001 /* raptor.atlas */ = {isa = PBXFileReference; lastKnownFileType = text; path = raptor.atlas; sourceTree = "<group>"; };
-		848D75F42D835EF1006C9001 /* raptor.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = raptor.json; sourceTree = "<group>"; };
-		848D75F52D835EF1006C9001 /* raptor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = raptor.png; sourceTree = "<group>"; };
-		848D75F62D835EF1006C9001 /* tank.atlas */ = {isa = PBXFileReference; lastKnownFileType = text; path = tank.atlas; sourceTree = "<group>"; };
-		848D75F72D835EF1006C9001 /* tank.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tank.png; sourceTree = "<group>"; };
-		848D75F82D835EF1006C9001 /* tank.skel */ = {isa = PBXFileReference; lastKnownFileType = file; path = tank.skel; sourceTree = "<group>"; };
-		848D76052D8362CC006C9001 /* HelloWorld.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = HelloWorld.png; sourceTree = "<group>"; };
 		84B081172D839D150010479C /* PolygonBatch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PolygonBatch.h; sourceTree = "<group>"; };
 		84B081182D839D150010479C /* PolygonBatch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PolygonBatch.cpp; sourceTree = "<group>"; };
 		8C583FA8169DB6D500F63A10 /* CCEditBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCEditBox.cpp; path = CCEditBox/CCEditBox.cpp; sourceTree = "<group>"; };
@@ -2257,22 +2238,7 @@
 		848D752B2D82EE86006C9001 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				848D76052D8362CC006C9001 /* HelloWorld.png */,
-				848D75ED2D835EF1006C9001 /* coin.atlas */,
-				848D75EE2D835EF1006C9001 /* coin.png */,
-				848D75EF2D835EF1006C9001 /* coin.skel */,
-				848D75F02D835EF1006C9001 /* goblins.atlas */,
-				848D75F12D835EF1006C9001 /* goblins.json */,
-				848D75F22D835EF1006C9001 /* goblins.png */,
-				848D75F32D835EF1006C9001 /* raptor.atlas */,
-				848D75F42D835EF1006C9001 /* raptor.json */,
-				848D75F52D835EF1006C9001 /* raptor.png */,
-				848D75F62D835EF1006C9001 /* tank.atlas */,
-				848D75F72D835EF1006C9001 /* tank.png */,
-				848D75F82D835EF1006C9001 /* tank.skel */,
-				848D75E72D82EFC8006C9001 /* spineboy.atlas */,
-				848D75E82D82EFC8006C9001 /* spineboy.json */,
-				848D75E92D82EFC8006C9001 /* spineboy.png */,
+				840206982D887B91005C84A4 /* res */,
 			);
 			name = Resources;
 			path = ../Resources;
@@ -2300,6 +2266,7 @@
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+				840206972D887B63005C84A4 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -2360,26 +2327,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				848D75EA2D82EFC8006C9001 /* spineboy.atlas in Resources */,
-				848D75EB2D82EFC8006C9001 /* spineboy.json in Resources */,
-				848D75EC2D82EFC8006C9001 /* spineboy.png in Resources */,
+				840206992D887B91005C84A4 /* res in Resources */,
 				41BC70E515BF81A5006A0A6C /* InfoPlist.strings in Resources */,
-				848D75F92D835EF1006C9001 /* tank.png in Resources */,
-				848D76062D8362CC006C9001 /* HelloWorld.png in Resources */,
-				848D75FA2D835EF1006C9001 /* goblins.atlas in Resources */,
-				848D75FB2D835EF1006C9001 /* coin.atlas in Resources */,
-				848D75FC2D835EF1006C9001 /* coin.png in Resources */,
-				848D75FD2D835EF1006C9001 /* coin.skel in Resources */,
-				848D75FE2D835EF1006C9001 /* raptor.json in Resources */,
-				848D75FF2D835EF1006C9001 /* tank.skel in Resources */,
-				848D76002D835EF1006C9001 /* goblins.png in Resources */,
-				848D76012D835EF1006C9001 /* tank.atlas in Resources */,
-				848D76022D835EF1006C9001 /* raptor.png in Resources */,
-				848D76032D835EF1006C9001 /* raptor.atlas in Resources */,
-				848D76042D835EF1006C9001 /* goblins.json in Resources */,
 				41BC70E615BF81A5006A0A6C /* MainMenu.xib in Resources */,
 				41BC70E715BF81A5006A0A6C /* Icon.icns in Resources */,
-				15C157DA168315B300D239F2 /* CMakeLists.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2741,7 +2692,10 @@
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../../../cocos2dx/platform/third_party/mac/libraries\"";
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
 				MARKETING_VERSION = 1;
-				OTHER_CFLAGS = "-O2";
+				OTHER_CFLAGS = (
+					"-g",
+					"-O0",
+				);
 				PRODUCT_NAME = hello;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "";

@@ -130,3 +130,4 @@ tags
 .cxx
 projects/hellolua/proj.win32/.vs/
 cocos2dx/platform/android/libcocos2dx/.gradle/
+projects/hello/proj.mac/hello.xcodeproj/xcshareddata
