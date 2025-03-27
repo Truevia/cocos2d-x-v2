@@ -322,7 +322,7 @@ namespace spine {
             }
             
             // 临时变量存储渲染数据
-            float* vertices = nullptr;
+            float* vertices = worldVertices;
             float* uvs = nullptr;
             unsigned short* indices = nullptr;
             int vertexCount = 0;
@@ -330,7 +330,6 @@ namespace spine {
             CCTexture2D* texture = nullptr;
             AttachmentVertices* attachmentVertices = nullptr;
             Color4F attachmentColor;
-            bool ownVertices = false; // 标记是否需要释放顶点数据
             
             // 处理不同类型的附件
             if (slot->getAttachment()->getRTTI().isExactly(RegionAttachment::rtti)) {
@@ -354,24 +353,19 @@ namespace spine {
                 
                 // 准备顶点和UV数据
                 vertexCount = 4; // 四边形有4个顶点
-                vertices = new float[vertexCount * 2]; // 每个顶点2个浮点数
-                ownVertices = true;
-                
+                int verticesLength = vertexCount * 2; // 每个顶点2个浮点数
+
                 // 获取世界坐标
+                ensureWorldVerticesCapacity(verticesLength);
                 attachment->computeWorldVertices(slot->getBone(), vertices, 0, 2);
                 
                 // 获取UV坐标
-                uvs = new float[vertexCount * 2]; // 每个顶点2个UV坐标
-                float* attachmentUVs = attachment->getUVs().buffer();
-                for (int j = 0; j < vertexCount * 2; j++) {
-                    uvs[j] = attachmentUVs[j];
-                }
+                uvs = attachment->getUVs().buffer();
                 
                 // 设置索引 (两个三角形组成一个四边形)
+                static unsigned short s_squad[6] = {0, 1, 2, 2, 3, 0};
                 indexCount = 6;
-                indices = new unsigned short[indexCount];
-                indices[0] = 0; indices[1] = 1; indices[2] = 2;
-                indices[3] = 2; indices[4] = 3; indices[5] = 0;
+                indices = s_squad;
                 
                 // 获取附件颜色
                 attachmentColor.r = attachment->getColor().r;
@@ -402,22 +396,16 @@ namespace spine {
                 int verticesLength = attachment->getWorldVerticesLength();
                 vertexCount = verticesLength / 2;
                 
-                vertices = new float[verticesLength];
-                ownVertices = true;
-                
                 // 获取世界坐标
+                ensureWorldVerticesCapacity(verticesLength);
                 attachment->computeWorldVertices(*slot, 0, verticesLength, vertices, 0, 2);
                 
                 // 获取UV坐标
-                uvs = new float[verticesLength];
-                for (int j = 0; j < vertexCount * 2; j++) {
-                    uvs[j] = attachment->getUVs()[j];
-                }
+                uvs = attachment->getUVs().buffer();
                 
                 // 设置索引
                 indexCount = attachment->getTriangles().size();
-                indices = new unsigned short[indexCount];
-                memcpy(indices, attachment->getTriangles().buffer(), indexCount * sizeof(unsigned short));
+                indices = attachment->getTriangles().buffer();
                 
                 // 获取附件颜色
                 attachmentColor.r = attachment->getColor().r;
@@ -439,11 +427,6 @@ namespace spine {
             // 检查纹理是否有效
             if (!texture) {
                 CCLOG("Error: Attachment has no texture!");
-                if (ownVertices) {
-                    delete[] vertices;
-                    delete[] uvs;
-                    delete[] indices;
-                }
                 _clipper->clipEnd(*slot);
                 continue;
             }
@@ -453,11 +436,6 @@ namespace spine {
             // 如果这个附件的颜色为0则跳过渲染
             if (alpha == 0) {
                 _clipper->clipEnd(*slot);
-                if (ownVertices) {
-                    delete[] vertices;
-                    delete[] uvs;
-                    delete[] indices;
-                }
                 continue;
             }
             
@@ -494,14 +472,6 @@ namespace spine {
             if (_clipper->isClipping()) {
                 _clipper->clipTriangles(vertices, indices, indexCount, uvs, 2);
                 
-                // 清理原始数据，因为我们将使用裁剪后的数据
-                if (ownVertices) {
-                    delete[] vertices;
-                    delete[] uvs;
-                    delete[] indices;
-                    ownVertices = false; // 已释放，使用裁剪器的数据
-                }
-                
                 if (_clipper->getClippedTriangles().size() == 0) {
                     _clipper->clipEnd(*slot);
                     continue;
@@ -533,13 +503,6 @@ namespace spine {
             
             // 将当前三角形添加到批处理中
             _polygonBatch->add(texture, vertices, uvs, vertexCount * 2, indices, indexCount, &vertexColor);
-            
-            // 如果使用了自己分配的内存，释放它
-            if (ownVertices) {
-                delete[] vertices;
-                delete[] uvs;
-                delete[] indices;
-            }
             
             _clipper->clipEnd(*slot);
         }
