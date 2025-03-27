@@ -266,8 +266,6 @@ namespace spine {
 	}
 
     void SkeletonRenderer::draw() {
-        CC_PROFILER_START_CATEGORY(kCCProfilerCategorySpine, "SkeletonRenderer::draw");
-        
         if (!_skeleton) {
             return;
         }
@@ -278,9 +276,7 @@ namespace spine {
         }
         
         CC_NODE_DRAW_SETUP();
-        
-        // 应用节点变换
-//        kmGLPushMatrix();
+        ccGLBindVAO(0);
         
         if (_effect) _effect->begin(*_skeleton);
         
@@ -289,10 +285,7 @@ namespace spine {
         nodeColor.g = getDisplayedColor().g / (float)255;
         nodeColor.b = getDisplayedColor().b / (float)255;
         nodeColor.a = getDisplayedOpacity() / (float)255;
-        
-        // 确保启用纹理
-        glEnable(GL_TEXTURE_2D);
-        
+
         CCTexture2D* lastTexture = nullptr;
         ccBlendFunc lastBlendFunc = {GL_ONE, GL_ZERO}; // 初始无效值，确保第一次会设置混合模式
         
@@ -562,10 +555,6 @@ namespace spine {
         if (_debugSlots || _debugBones || _debugMeshes) {
     //        drawDebug();
         }
-        
-//        kmGLPopMatrix();
-        
-        CC_PROFILER_STOP_CATEGORY(kCCProfilerCategorySpine, "SkeletonRenderer::draw");
     }
 
 	CCRect SkeletonRenderer::boundingBox () {
