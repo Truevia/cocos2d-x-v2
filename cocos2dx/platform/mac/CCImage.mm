@@ -336,6 +336,43 @@ static bool _isValidFontName(const char *fontName)
     return ret;
 }
 
+static NSFont* _createSystemFont(const char* fontName, int size)
+{
+    NSString * fntName = [NSString stringWithUTF8String:fontName];
+    fntName = [[fntName lastPathComponent] stringByDeletingPathExtension];
+    
+    // font
+    NSFont *font = [NSFont fontWithName:fntName size:size];
+    
+    if (font == nil) {
+        font = [NSFont systemFontOfSize:size];
+    }
+    return font;
+}
+
+static BOOL _t_saveImageToFile(NSBitmapImageRep *bitmapRep, NSString *filePath, NSBitmapImageFileType fileType)
+{
+    NSDictionary *properties = @{};
+    NSData *imageData = [bitmapRep representationUsingType:fileType properties:properties];
+    
+    if (!imageData)
+    {
+        return NO;
+    }
+    
+    NSError *error = nil;
+    BOOL success = [imageData writeToFile:filePath options:NSDataWritingAtomic error:&error];
+    
+    if (!success)
+    {
+        NSLog(@"%@", error.localizedDescription);
+        return NO;
+    }
+    
+    NSLog(@"%s: %@", __FUNCTION__, filePath);
+    return YES;
+}
+
 static bool _initWithString(const char * pText, cocos2d::CCImage::ETextAlign eAlign, const char * pFontName, int nSize, tImageInfo* pInfo, cocos2d::ccColor3B* pStrokeColor)
 {
     bool bRet = false;
@@ -347,19 +384,7 @@ static bool _initWithString(const char * pText, cocos2d::CCImage::ETextAlign eAl
 		NSString * string  = [NSString stringWithUTF8String:pText];
 		
 		// font
-		NSFont *font = [[NSFontManager sharedFontManager]
-						 fontWithFamily:[NSString stringWithUTF8String:pFontName]
-						traits:NSUnboldFontMask | NSUnitalicFontMask
-						 weight:0
-						 size:nSize];
-		
-		if (font == nil) {
-			font = [[NSFontManager sharedFontManager]
-					fontWithFamily:@"Arial"
-					traits:NSUnboldFontMask | NSUnitalicFontMask
-					weight:0
-					size:nSize];
-		}
+        NSFont *font = _createSystemFont(pFontName, nSize);
 		CC_BREAK_IF(!font);
 		
 		// color
@@ -449,25 +474,33 @@ static bool _initWithString(const char * pText, cocos2d::CCImage::ETextAlign eAl
 		: (dimensions.height - realDimensions.height) / 2.0f;									// align to center
 		
 		
-		NSRect textRect = NSMakeRect(xPadding, POTHigh - dimensions.height + yPadding, realDimensions.width, realDimensions.height);
+		NSRect textRect = NSMakeRect(xPadding, POTHigh - dimensions.height + yPadding,
+                                     realDimensions.width, realDimensions.height);
 		//Disable antialias
 		
-		[[NSGraphicsContext currentContext] setShouldAntialias:NO];	
-		
-		NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(POTWide, POTHigh)];
-        
-		[image lockFocus];
-        
-        // patch for mac retina display and lableTTF
-        [[NSAffineTransform transform] set];
-		
-		//[stringWithAttributes drawAtPoint:NSMakePoint(xPadding, offsetY)]; // draw at offset position	
-		[stringWithAttributes drawInRect:textRect];
-		//[stringWithAttributes drawInRect:textRect withAttributes:tokenAttributesDict];
-		NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, POTWide, POTHigh)];
-		[image unlockFocus];
-		
-		data = (unsigned char*) [bitmap bitmapData];  //Use the same buffer to improve the performance.
+        NSBitmapImageRep* offscreenRep = [[[NSBitmapImageRep alloc]
+            initWithBitmapDataPlanes:NULL
+            pixelsWide:POTWide
+            pixelsHigh:POTHigh
+            bitsPerSample:8
+            samplesPerPixel:4
+            hasAlpha:YES
+            isPlanar:NO
+            colorSpaceName:NSDeviceRGBColorSpace
+            bitmapFormat: 0
+            bytesPerRow:4 * POTWide
+            bitsPerPixel:32] autorelease];
+
+        NSGraphicsContext* g = [NSGraphicsContext graphicsContextWithBitmapImageRep:offscreenRep];
+        [NSGraphicsContext saveGraphicsState];
+        [NSGraphicsContext setCurrentContext:g];
+        [stringWithAttributes drawInRect:textRect];
+        [NSGraphicsContext restoreGraphicsState];
+
+        data = (unsigned char*) [offscreenRep bitmapData];  //Use the same buffer to improve the performance.
+
+//        _t_saveImageToFile(offscreenRep, @"/tmp/test.png", NSBitmapImageFileTypePNG);
+     
 		
 		NSUInteger textureSize = POTWide*POTHigh*4;
 		
@@ -483,9 +516,7 @@ static bool _initWithString(const char * pText, cocos2d::CCImage::ETextAlign eAl
 			pInfo->bitsPerComponent = 8;
 			bRet = true;
 		}
-		[bitmap release];
-		[image release];
-	} while (0);
+    } while (0);
     return bRet;
 }
 
