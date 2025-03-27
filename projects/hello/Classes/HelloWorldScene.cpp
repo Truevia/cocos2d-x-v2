@@ -178,7 +178,12 @@ bool HelloWorld::init()
     // add a label shows "Hello World"
     // create and initialize a label
 
-    CCLabelTTF* pLabel = CCLabelTTF::create("Hello World", "Arial", 24);
+    std::string fontName("Arial");
+    fontName = "Monaco";
+//    fontName = "Gill Sans";
+    CCLabelTTF* pLabel = CCLabelTTF::create("Hello World", fontName.c_str(), 24);
+    
+    pLabel->setColor(ccc3(255, 0, 0));
 
     // position the label on the center of the screen
     pLabel->setPosition(ccp(origin.x + visibleSize.width/2,
