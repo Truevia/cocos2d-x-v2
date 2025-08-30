@@ -88,7 +88,6 @@ Set Android NDK location:
     CURLOPT_SSL_VERIFYHOST, 2L
     )
 
-
 ## TODO
 
 1. [x] NDK >= r13b
@@ -101,6 +100,8 @@ export ANDROID_HOME=$ANDROID_SDK_ROOT
 export NDK_HOME=$ANDROID_SDK_ROOT/ndk/16.1.4479499
 export ANDROID_NDK_HOME=$NDK_HOME
 export JAVA_HOME="/usr/local/opt/openjdk@11/libexec/openjdk.jdk/Contents/Home"
+
+[android-target-35](docs/readme-android-target-35.md)
 
 [cocos2d-x][1] is a multi-platform 2D game framework in C++, branched on
 [cocos2d-iphone][2] and licensed under MIT.
