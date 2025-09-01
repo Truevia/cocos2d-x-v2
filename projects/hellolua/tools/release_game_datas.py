@@ -3,9 +3,12 @@
 
 import os
 import plistlib
+import hashlib
+import base64
 
 # self
 from rrcore import *
+from safe_file_id_base62 import short_id_from_path
 
 CUR_DIR = normalpath(os.path.dirname(os.path.abspath(__file__)))
 RESOURCES_DIR = normalpath(os.path.join(CUR_DIR, '..', 'Resources'))
@@ -18,12 +21,16 @@ def release_one_dir(from_folder, to_folder):
     for file in files:
         base_path = file.replace(from_folder + '/', '')
         md5 = md5str(base_path)
-        new_folder = os.path.join(to_folder, md5[:2])
-        new_path = os.path.join(new_folder, md5[2:])
+        md5 = short_id_from_path(base_path, bits=64)
+        folder_name = md5[2].lower() + md5[5].lower() # 特别注意这里, 必须小写或者大写, 不能混合
+        new_folder = os.path.join(to_folder, folder_name)
+        new_path = os.path.join(new_folder, md5)
         mkdirs(new_folder)
+        # new_path = os.path.join(to_folder, md5)
         shutil.copy(file, new_path)
         k = base_path
-        v = md5[:2] + '/' + md5[2:]
+        v = folder_name + '/' + md5
+        # v = md5
         metadata[k] = v
         print(k,v)
     return metadata
