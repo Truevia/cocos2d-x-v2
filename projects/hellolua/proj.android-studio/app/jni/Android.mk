@@ -10,7 +10,8 @@ include $(CLEAR_VARS)
 #$(call import-add-path,$(LOCAL_PATH)/../../../../../extensions)
 #$(call import-add-path,$(LOCAL_PATH)/../../../../../CocosDenshion/android)
 
-LOCAL_MODULE := cocos2dlua_shared
+# LOCAL_MODULE := cocos2dlua_shared
+LOCAL_MODULE := cocos2dlua
 
 LOCAL_MODULE_FILENAME := libcocos2dlua
 

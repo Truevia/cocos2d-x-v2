@@ -1,5 +1,6 @@
 #https://developer.android.com/ndk/guides/cpp-support
-APP_STL := c++_static #gnustl_static
+# gnustl_static / c++_static
+APP_STL := c++_static
 
 APP_CPPFLAGS := -frtti -DCC_ENABLE_CHIPMUNK_INTEGRATION=1 -fsigned-char #-std=c++11
 APP_LDFLAGS := -latomic -landroid

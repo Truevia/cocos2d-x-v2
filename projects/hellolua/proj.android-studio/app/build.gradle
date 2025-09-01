@@ -6,17 +6,35 @@ apply plugin: 'com.android.application'
 
 android {
     // https://developer.android.com/distribute/best-practices/develop/target-sdk
-    compileSdkVersion 30
-    buildToolsVersion "28.0.3"
+    // compileSdkVersion 30
+    // buildToolsVersion "28.0.3"
+    
+    namespace 'org.cocos.game'
+    compileSdkVersion 35
+//     FOR NDK on macos m1
+//    modify: /path/to/ndk/21.4.7075529/ndk-build
+//    $DIR/build/ndk-build "$@"
+//    ->
+//    arch -x86_64 $DIR/build/ndk-build "$@"
+    // https://github.com/android/ndk/wiki/Unsupported-Downloads#r16b
+    ndkVersion "16.1.4479499"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    // Ensure compatibility with 16KB page-size devices by extracting JNI libs at install-time
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+
     defaultConfig {
         applicationId "org.cocos.lua226"
-        minSdkVersion 19
-        targetSdkVersion 30
+        minSdkVersion 21
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
 
@@ -27,7 +45,7 @@ android {
                     // arguments 'NDK_TOOLCHAIN_VERSION=clang'
                     // arguments '-j' + Runtime.runtime.availableProcessors()
                     //
-                    arguments 'NDK_TOOLCHAIN_VERSION=4.9'
+                    // arguments 'NDK_TOOLCHAIN_VERSION=4.9'
                     // arguments 'APP_PLATFORM=android-'+PROP_APP_PLATFORM
 
                     def module_paths = [
@@ -108,19 +126,56 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            debuggable true
-            jniDebuggable true
+           // 开启混淆
+            minifyEnabled true
+            // 开启资源压缩
+            shrinkResources true
+            // 可选：开启多dex
+            multiDexEnabled true
+
+            debuggable false
+            jniDebuggable false
+
+            // 添加这些配置来移除调试符号
+            crunchPngs false  // 可选：禁用PNG优化以加快构建
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig signingConfigs.release
             }
+
+            externalNativeBuild {
+                ndkBuild {
+                    arguments 'NDK_DEBUG=0'
+                }
+            }
+
+            ndk {
+                // 设置为 true 以在构建 APK 时剥离调试符号
+                // 表现为 aab 里包含 com.android.tools.build.debugsym/** 调试信息, 上传到 Google Play 后, Google Play 的崩溃信息会有用
+                debugSymbolLevel 'NONE'
+
+                // debugSymbolLevel 'NONE'  // 'FULL' | 'SYMBOL_TABLE' | 'NONE'
+//                Note: If ndk.debugSymbolLevel is set to 'FULL' or 'SYMBOL_TABLE',
+//                or if it's omitted and the default behavior includes symbols,
+//                the com.android.tools.build.debugsymbols directory will be present
+//                in the AAB. Setting it to 'NONE' is the direct method to prevent its
+//                inclusion for release builds.
+            }
         }
 
         debug {
+            applicationIdSuffix ".debug"
+            resValue "string", "app_name", "Lua226 debug"
+            
+            minifyEnabled false
+            shrinkResources false
+            multiDexEnabled true
+
             debuggable true
             jniDebuggable true
             renderscriptDebuggable true
+
             externalNativeBuild {
                 ndkBuild {
                     arguments 'NDK_DEBUG=1'
